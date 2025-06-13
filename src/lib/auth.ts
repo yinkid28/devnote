@@ -1,4 +1,5 @@
 import { User } from '@/types'
+import { Session } from 'next-auth'
 import { signIn, signOut, getSession } from 'next-auth/react'
 
 export class AuthService {
@@ -32,7 +33,7 @@ export class AuthService {
     }
   }
 
-  static async getSession(): Promise<any> {
+  static async getSession(): Promise<Session | null> {
     return await getSession()
   }
 

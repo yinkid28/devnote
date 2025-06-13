@@ -6,6 +6,7 @@ import { User, Note } from '@/types'
 import { AuthService } from '@/lib/auth'
 import { apiService } from '@/lib/api'
 import GoogleAuth from './GoogleAuth'
+import Image from 'next/image'
 
 export default function DevNotebook() {
   const [user, setUser] = useState<User | null>(null)
@@ -144,7 +145,7 @@ export default function DevNotebook() {
           
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
-              <img 
+              <Image
                 src={user.avatar || '/api/placeholder/32/32'} 
                 alt="Avatar" 
                 className="w-8 h-8 rounded-full" 
