@@ -1,6 +1,6 @@
-import type { NextAuthOptions } from "next-auth"
-import GoogleProvider from "next-auth/providers/google"
-import jwt from "jsonwebtoken"
+import type { NextAuthOptions } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import jwt from "jsonwebtoken";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -11,9 +11,9 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, account, user }) {
-      console.log('✅ [JWT Callback] Triggered', { token, account, user })
+      console.log('✅ [JWT Callback] Triggered', { token, account, user });
 
-      // On first login
+      // Only create a new backendToken on first login
       if (account && user) {
         try {
           const customToken = jwt.sign(
@@ -23,41 +23,45 @@ export const authOptions: NextAuthOptions = {
               name: user.name,
               avatar: user.image || '',
             },
-            process.env.JWT_SECRET!, // Must be defined in your .env
+            process.env.JWT_SECRET!,
             {
               algorithm: 'HS256',
-              expiresIn: '1h',
+              expiresIn: '10h',
             }
-          )
+          );
 
-          console.log('✅ [JWT Callback] Custom backendToken created')
-          token.backendToken = customToken
+          console.log('✅ [JWT Callback] Custom backendToken created');
+          token.backendToken = customToken;
         } catch (err) {
-          console.error('❌ [JWT Callback] Failed to create custom backendToken:', err)
+          console.error('❌ [JWT Callback] Failed to create custom backendToken:', err);
         }
       }
 
-      // Ensure backendToken is returned on future calls too
-      return token
+      // Always return the token (including backendToken if it exists)
+      if (!token.backendToken) {
+        console.warn('⚠️ [JWT Callback] No backendToken on token');
+      }
+
+      return token;
     },
 
     async session({ session, token }) {
-      console.log('✅ [Session Callback] Triggered', { session, token })
+      console.log('✅ [Session Callback] Triggered', { session, token });
 
       if (token.backendToken) {
-        session.backendToken = token.backendToken
-        console.log('✅ [Session Callback] backendToken added to session')
+        session.backendToken = token.backendToken;
+        console.log('✅ [Session Callback] backendToken added to session');
       } else {
-        console.warn('⚠️ [Session Callback] No backendToken found on token')
+        console.warn('⚠️ [Session Callback] No backendToken found on token');
       }
 
       if (session.user) {
-        session.user.id = token.sub || session.user.id
+        session.user.id = token.sub || session.user.id;
       }
 
-      return session
+      return session;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
   debug: true,
-}
+};

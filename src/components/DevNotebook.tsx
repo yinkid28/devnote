@@ -145,11 +145,13 @@ export default function DevNotebook() {
           
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
-              <Image
-                src={user.avatar || '/api/placeholder/32/32'} 
-                alt="Avatar" 
-                className="w-8 h-8 rounded-full" 
-              />
+             <Image 
+               src={user.avatar || '/api/placeholder/32/32'} 
+               alt="Avatar" 
+               width={32}
+               height={32}
+               className="w-8 h-8 rounded-full" 
+             />
               <span className="text-sm text-gray-300">{user.name}</span>
             </div>
             <button

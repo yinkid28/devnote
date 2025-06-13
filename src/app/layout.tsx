@@ -7,6 +7,9 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'DevNotes - Developer Notebook',
   description: 'A notebook app designed for developers',
+  icons: {
+    icon: '/favicon.ico',
+  },
 }
 
 export default function RootLayout({
