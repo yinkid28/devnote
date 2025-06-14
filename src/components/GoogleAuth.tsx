@@ -1,35 +1,23 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { Terminal } from 'lucide-react'
-import { AuthService } from '@/lib/auth'
-import { User } from '@/types'
+import { useState } from 'react';
+import { signIn } from 'next-auth/react';
+import { Terminal } from 'lucide-react';
 
-interface GoogleAuthProps {
-  onAuthSuccess: (user: User) => void
-}
-
-export default function GoogleAuth({ onAuthSuccess }: GoogleAuthProps) {
-  const [isLoading, setIsLoading] = useState(false)
+export default function GoogleAuth() {
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleGoogleSignIn = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      await AuthService.initializeGoogleSignIn()
-      const result = await AuthService.signInWithGoogle()
-      
-      if (result) {
-        onAuthSuccess(result.user)
-      } else {
-        alert('Authentication failed. Please try again.')
-      }
+      // Redirects to Google and back after login
+      await signIn('google');
     } catch (error) {
-      console.error('Sign in error:', error)
-      alert('Authentication failed. Please try again.')
-    } finally {
-      setIsLoading(false)
+      console.error('Sign-in error:', error);
+      alert('Authentication failed. Please try again.');
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center">
@@ -41,14 +29,14 @@ export default function GoogleAuth({ onAuthSuccess }: GoogleAuthProps) {
           </div>
           <p className="text-gray-400">Your personal development notebook</p>
         </div>
-        
+
         <button
           onClick={handleGoogleSignIn}
           disabled={isLoading}
           className="w-full bg-white text-gray-900 py-3 px-4 rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? (
-            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-900 mr-2"></div>
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-900 mr-2" />
           ) : (
             <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
               <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -61,5 +49,5 @@ export default function GoogleAuth({ onAuthSuccess }: GoogleAuthProps) {
         </button>
       </div>
     </div>
-  )
+  );
 }

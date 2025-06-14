@@ -38,11 +38,6 @@ export default function DevNotebook() {
     setNotes(fetchedNotes)
   }
 
-  const handleAuthSuccess = (authenticatedUser: User) => {
-    setUser(authenticatedUser)
-    loadNotes()
-  }
-
   const handleSignOut = () => {
     AuthService.signOut()
     setUser(null)
@@ -133,7 +128,7 @@ export default function DevNotebook() {
   }
 
   if (!user) {
-    return <GoogleAuth onAuthSuccess={handleAuthSuccess} />
+    return <GoogleAuth />
   }
 
   return (
